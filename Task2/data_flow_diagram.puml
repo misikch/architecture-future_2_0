@@ -1,0 +1,63 @@
+@startuml
+!theme plain
+title Data Flow Diagram - Система "Будущее 2.0"
+
+!define DOMAIN_COLOR #E1F5FE
+!define EXTERNAL_COLOR #FFF3E0
+!define STORAGE_COLOR #F3E5F5
+!define INTEGRATION_COLOR #E8F5E8
+
+package "Domain Services" <<DOMAIN_COLOR>> {
+    [Healthcare Domain] as HEALTHCARE
+    [Financial Domain] as FINANCIAL
+    [AI Domain] as AI_DOMAIN
+    [Customer Domain] as CUSTOMER
+}
+
+package "User Interface" <<INTEGRATION_COLOR>> {
+    [Self-Service Portal] as PORTAL
+    [API Gateway] as API_GATEWAY
+}
+
+package "Data Platform" <<STORAGE_COLOR>> {
+    [Event Bus\n(Apache Kafka)] as EVENT_BUS
+    [Data Lake\n(Delta Lake)] as DATA_LAKE
+    [Modern DWH\n(Snowflake)] as MODERN_DWH
+}
+
+package "Legacy Systems" <<EXTERNAL_COLOR>> {
+    [Legacy DWH\n(SQL Server 2008)] as LEGACY_DWH
+}
+
+' User interactions
+PORTAL --> API_GATEWAY : "REST API запросы"
+API_GATEWAY --> MODERN_DWH : "SQL запросы для отчетов"
+
+' Domain to Event Bus flows
+HEALTHCARE --> EVENT_BUS : "События медицинских процедур"
+FINANCIAL --> EVENT_BUS : "События транзакций"
+AI_DOMAIN --> EVENT_BUS : "ML предсказания"
+CUSTOMER --> EVENT_BUS : "События клиентов"
+
+' Data flows
+EVENT_BUS --> DATA_LAKE : "Потоковая обработка"
+DATA_LAKE --> MODERN_DWH : "ETL процессы"
+
+' Legacy migration
+LEGACY_DWH --> DATA_LAKE : "Миграция данных"
+
+note top of DATA_LAKE
+**Data Lake содержит:**
+- События из всех доменов
+- Исторические данные из Legacy DWH  
+- Данные для аналитики
+end note
+
+note bottom of MODERN_DWH
+**Modern DWH обеспечивает:**
+- Быструю аналитику
+- Self-service возможности
+- Интеграцию с порталом
+end note
+
+@enduml 

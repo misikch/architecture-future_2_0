@@ -1,0 +1,36 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Бизнес-пользователь", "Использует портал самообслуживания для создания отчетов")
+
+System_Boundary(future20, "Будущее 2.0") {
+    
+    Container(self_service_portal, "Портал самообслуживания", "React/Superset", "Self-service платформа для создания отчетов и дашбордов")
+    Container(api_gateway, "API Gateway", "Kong", "Единая точка входа для всех запросов")
+    
+    Container(healthcare_domain, "Healthcare Domain", "Python/FastAPI", "Медицинские сервисы и данные (без ПДн)")
+    Container(financial_domain, "Financial Domain", "Java/Spring Boot", "Финансовые сервисы и транзакции")
+    Container(ai_domain, "AI Domain", "Python/MLflow", "ИИ-сервисы и машинное обучение")
+    Container(customer_domain, "Customer Domain", "Node.js", "Управление клиентами и CRM")
+    
+    Container(event_bus, "Event Bus", "Apache Kafka", "Асинхронный обмен событиями между доменами")
+    Container(data_lake, "Data Lake", "Delta Lake", "Хранилище сырых данных из всех доменов")
+    Container(modern_dwh, "Modern DWH", "Snowflake", "Аналитическое хранилище данных")
+}
+
+System_Ext(legacy_dwh, "Legacy DWH", "SQL Server 2008 - выводится из эксплуатации")
+
+Rel(user, self_service_portal, "Создает отчеты через браузер")
+Rel(self_service_portal, api_gateway, "REST API")
+Rel(api_gateway, modern_dwh, "SQL запросы")
+
+Rel(healthcare_domain, event_bus, "События медицинских процедур")
+Rel(financial_domain, event_bus, "События транзакций")
+Rel(ai_domain, event_bus, "ML предсказания")
+Rel(customer_domain, event_bus, "События клиентов")
+
+Rel(event_bus, data_lake, "Потоковая обработка")
+Rel(data_lake, modern_dwh, "ETL процессы")
+Rel(legacy_dwh, data_lake, "Миграция данных")
+
+@enduml 

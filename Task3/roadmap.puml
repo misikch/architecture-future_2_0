@@ -1,0 +1,23 @@
+@startuml
+skinparam handwritten false
+skinparam defaultTextAlignment center
+
+title Роадмап трансформации архитектуры "Будущее 2.0"
+
+[Q1 2026] as Q1
+[Q2 2026] as Q2
+[Q3 2026] as Q3
+[Q4 2026] as Q4
+[Q1 2027] as Q1_2027
+
+:Архитектурная команда:
+:DevOps Team:
+:Доменные команды:
+:Data Platform Team:
+
+Q1 --> Q2: Архитектурная подготовка Анализ текущего состояния Проектирование целевой архитектуры Подготовка команд
+Q2 --> Q3: Развертывание платформы Kubernetes + Event Bus (Kafka) Data Lake на Delta Lake CI/CD пайплайны
+Q3 --> Q4: Миграция доменов Healthcare и Customer Domain Financial и AI Domain Event-driven интеграция
+Q4 --> Q1_2027: Аналитическая платформа Modern DWH (Snowflake) Self-Service портал Обучение пользователей
+
+@enduml 
